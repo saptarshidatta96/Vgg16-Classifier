@@ -9,7 +9,10 @@ objects = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car',
        'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike',
        'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor']
 
-st.title("Image Classification")
+st.title("Image Classifier")
+st.write('We have developed an web application for our Deep Learning Application.')
+st.write('This Application can classify images based on the below 20 classes:')
+st.markdown('aeroplane, bicycle, bird, boat, bottle, bus, car,cat, chair,cow, diningtable, dog, horse, motorbike,person, pottedplant, sheep, sofa, train, tvmonitor')
 @st.cache()
 def preprocess_image(uploaded_file):
     image = Image.open(uploaded_file)
