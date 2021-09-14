@@ -5,6 +5,10 @@ from PIL import Image, ImageOps
 import numpy as np
 import cv2
 
+objects = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car',
+       'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike',
+       'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor']
+
 st.title("Image Classification")
 @st.cache()
 def preprocess_image(uploaded_file):
@@ -37,4 +41,4 @@ if __name__ == "__main__":
             st.write("Classifying...")
             label = load_predict(uploaded_file,  'trained_model.h5')
             st.write('The image uploaded belongs to:')
-            st.text(label)
+            st.text(objects[label])
