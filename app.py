@@ -1,41 +1,40 @@
 import streamlit as st
-
-from PIL import Image, ImageOps
-import keras
+import tensorflow as tf
+from tensorflow import keras
 from PIL import Image, ImageOps
 import numpy as np
+import cv2
 
 st.title("Image Classification")
-
-def machine_classification(img, weights_file):
-    # Load the model
-    model = keras.models.load_model(weights_file)
-
-    # Create the array of the right shape to feed into the keras model
-    data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
-    image = img
-    #image sizing
-    size = (224, 224)
-    image = ImageOps.fit(image, size, Image.ANTIALIAS)
-
-    #turn the image into a numpy array
-    image_array = np.asarray(image)
-    # Normalize the image
-    normalized_image_array = (image_array.astype(np.float32) / 127.0) - 1
-
-    # Load the image into the array
-    data[0] = normalized_image_array
-
-    # run the inference
-    prediction = model.predict(data)
-    return np.argmax(prediction) # return position of the highest probability
-
-
-uploaded_file = st.file_uploader("Pls upload an image", type="jpg")
-if uploaded_file is not None:
+@st.cache()
+def preprocess_image(uploaded_file):
     image = Image.open(uploaded_file)
-    st.image(image, caption='Uploaded MRI.', use_column_width=True)
-    st.write("")
-    st.write("Classifying...")
-    label = machine_classification(image, 'trained_model.h5')
-    print(label)
+    image = cv2.cvtColor(np.float32(image), cv2.COLOR_BGR2RGB)
+    image = cv2.resize(image, (224,224))
+    image_tensor = tf.convert_to_tensor(image, dtype=tf.float32)
+    image_tensor = tf.expand_dims(image_tensor, axis=0).numpy()
+    return image_tensor
+
+def load_model(weights_file):
+    model = keras.models.load_model(weights_file)
+    return model
+    
+
+def load_predict(uploaded_file ,weights_file):
+    data = preprocess_image(uploaded_file)
+    model = load_model(weights_file)
+    prediction = model.predict(data)
+    return np.argmax(prediction)
+
+
+if __name__ == "__main__":
+    uploaded_file = st.file_uploader("Pls upload an image", type=['jpg', 'png'])
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption='Uploaded IMAGE', use_column_width=True)
+        if st.button("Predict"):
+            st.write("")
+            st.write("Classifying...")
+            label = load_predict(uploaded_file,  'trained_model.h5')
+            st.write('The image uploaded belongs to:')
+            st.text(label)
