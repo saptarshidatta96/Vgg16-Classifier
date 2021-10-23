@@ -10,8 +10,8 @@ Once the model has trained, we downloaded the weights file and developed a pytho
 
 Then we created 2 additional files in our working directory namely, `Dockerfile` and `requirements.txt` to further contanerize our application.
 
-We created the docker image by running the following command - `docker run -t vgg16classifier_image .`
+We created the docker image by running the following command - `docker build -t vgg16classifier_image .`
 
-We created the docker container by running the following command - `docker build --name vgg16_classifier -p 8501:8501 vgg16_classifier_image`
+We created the docker container by running the following command - `docker run --name vgg16_classifier -p 8501:8501 vgg16_classifier_image`
 
 Weights File is present at -- [https://drive.google.com/file/d/1w7VdUlaefuIXs4cI5NRImNKEWFJsSusB/view?usp=sharing]
